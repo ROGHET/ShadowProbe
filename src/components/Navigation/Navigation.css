@@ -126,7 +126,50 @@
   letter-spacing: 0.1em;
 }
 
+.nav-mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(5, 7, 11, 0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+}
+
+.nav-mobile-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-mobile-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 450;
+  padding: 8px 0;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-mobile-link--active {
+  color: var(--accent);
+}
+
 @media (max-width: 900px) {
-  .nav-links { display: none; }
-  .nav-mission-label { display: none; }
+  .desktop-only { display: none !important; }
+  .nav-mobile-menu-btn { display: block; }
 }

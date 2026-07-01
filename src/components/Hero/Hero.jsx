@@ -167,7 +167,7 @@ export default function Hero() {
           <motion.div variants={item} className="hero-meta-row">
             <div className="hero-meta-item">
               <span className="hero-meta-label">SPACECRAFT</span>
-              <span className="hero-meta-value">Chandrayaan-4 Orbiter</span>
+              <span className="hero-meta-value">Chandrayaan-2 Orbiter</span>
             </div>
             <div className="hero-meta-divider" />
             <div className="hero-meta-item">
@@ -177,7 +177,7 @@ export default function Hero() {
             <div className="hero-meta-divider" />
             <div className="hero-meta-item">
               <span className="hero-meta-label">COVERAGE</span>
-              <span className="hero-meta-value">89.7%</span>
+              <span className="hero-meta-value">Illustrative</span>
             </div>
           </motion.div>
 

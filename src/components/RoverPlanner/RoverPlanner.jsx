@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Navigation, Target, MapPin, Flag } from 'lucide-react';
 import { ROVER_WAYPOINTS } from '../../data/missionData';
@@ -8,6 +8,14 @@ export default function RoverPlanner() {
   const canvasRef = useRef(null);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
+  const [activeRoute, setActiveRoute] = useState('Planned');
+  const wptsPct = [
+    { x: 0.15, y: 0.80, id: 0 },
+    { x: 0.32, y: 0.65, id: 1 },
+    { x: 0.50, y: 0.50, id: 2 },
+    { x: 0.68, y: 0.35, id: 3 },
+    { x: 0.85, y: 0.20, id: 4 },
+  ];
 
   useEffect(() => {
     if (!inView) return;
@@ -65,13 +73,7 @@ export default function RoverPlanner() {
     });
 
     // Define waypoint positions on canvas
-    const wpts = [
-      { x: 0.12, y: 0.82 }, // Lander
-      { x: 0.28, y: 0.65 }, // WP-01
-      { x: 0.44, y: 0.52 }, // WP-02
-      { x: 0.61, y: 0.38 }, // WP-03
-      { x: 0.82, y: 0.22 }, // Target
-    ].map(p => ({ x: p.x * W, y: p.y * H }));
+    const wpts = wptsPct.map(p => ({ x: p.x * W, y: p.y * H, ...p }));
 
     // Draw path with glow
     ctx.shadowBlur = 8;
@@ -92,14 +94,13 @@ export default function RoverPlanner() {
     wpts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
     ctx.stroke();
 
-    // Draw waypoint markers
+    // Draw waypoint dots (basic)
     wpts.forEach((p, i) => {
       const wp = ROVER_WAYPOINTS[i];
       const isLander = wp.type === 'lander';
       const isTarget = wp.type === 'target';
       const color = isLander ? '#2ECC71' : isTarget ? '#EF5350' : '#4FC3F7';
 
-      // Outer ring
       ctx.beginPath();
       ctx.arc(p.x, p.y, 14, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
@@ -108,15 +109,14 @@ export default function RoverPlanner() {
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Inner dot
       ctx.beginPath();
       ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.fill();
 
       // Label
-      ctx.font = '500 9px IBM Plex Mono, monospace';
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.font = '500 10px "IBM Plex Mono", monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       ctx.textAlign = 'center';
       ctx.fillText(wp.label, p.x, p.y - 20);
     });
@@ -171,8 +171,10 @@ export default function RoverPlanner() {
       raf = requestAnimationFrame(animDot);
     };
 
-    // raf = requestAnimationFrame(animDot); // disabled for perf; enable for live demo
-  }, [inView]);
+    raf = requestAnimationFrame(animDot);
+    
+    return () => cancelAnimationFrame(raf);
+  }, [inView, activeRoute]);
 
   return (
     <section id="rover-planner" className="rover-section">
@@ -205,7 +207,30 @@ export default function RoverPlanner() {
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <canvas ref={canvasRef} width={800} height={480} className="rover-canvas" />
+            <canvas 
+              ref={canvasRef} 
+              width={800} 
+              height={480} 
+              className="rover-canvas"
+            />
+
+            {/* Route Toggles */}
+            <div className="rover-route-toggles glass" style={{ position: 'absolute', top: 16, left: 16, display: 'flex', gap: 8, padding: 8, borderRadius: 8, zIndex: 10 }}>
+              {['Planned', 'Alternate', 'Safe', 'Shortest'].map(rt => (
+                <button
+                  key={rt}
+                  onClick={() => setActiveRoute(rt)}
+                  style={{
+                    background: activeRoute === rt ? 'rgba(79,195,247,0.2)' : 'transparent',
+                    border: `1px solid ${activeRoute === rt ? '#4FC3F7' : 'rgba(255,255,255,0.1)'}`,
+                    color: activeRoute === rt ? '#4FC3F7' : 'var(--text-dim)',
+                    padding: '4px 8px', fontSize: '10px', fontFamily: 'var(--font-mono)', borderRadius: 4, cursor: 'pointer'
+                  }}
+                >
+                  {rt} Route
+                </button>
+              ))}
+            </div>
 
             {/* Legend overlay */}
             <div className="rover-legend glass">
@@ -248,11 +273,11 @@ export default function RoverPlanner() {
             <div className="card" style={{ marginTop: 24 }}>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.1em', marginBottom: 12 }}>ROUTE STATISTICS</div>
               {[
-                ['Total Distance', '14.8 km'],
-                ['Hazard Segments', '0'],
-                ['Max Slope', '4.7°'],
-                ['Est. Duration', '18.4 hrs'],
-                ['Energy Budget', '87% nominal'],
+                ['Total Distance', activeRoute === 'Planned' ? '14.8 km (Illustrative)' : '16.2 km (Illustrative)'],
+                ['Hazard Segments', '0 (Illustrative)'],
+                ['Max Slope', '4.7° (Illustrative)'],
+                ['Est. Duration', '18.4 hrs (Illustrative)'],
+                ['Energy Budget', '87% nominal (Illustrative)'],
               ].map(([k, v]) => (
                 <div key={k} className="data-row">
                   <span className="data-label">{k}</span>

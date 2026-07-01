@@ -61,7 +61,7 @@ export default function Footer() {
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Mission SP-01</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Spacecraft: Chandrayaan-4</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Spacecraft: Chandrayaan-2</span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>89.9°S | Lunar South Pole</span>
           </div>
         </div>

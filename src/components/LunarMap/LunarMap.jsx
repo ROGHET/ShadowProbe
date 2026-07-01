@@ -35,118 +35,135 @@ export default function LunarMap() {
 
     ctx.clearRect(0, 0, W, H);
 
-    // Background circle (moon surface)
+    // Background base
     const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
-    bgGrad.addColorStop(0, '#2a2a2a');
-    bgGrad.addColorStop(0.5, '#1a1a1a');
-    bgGrad.addColorStop(1, '#0d0d0d');
+    if (activeLayer === 'radar') {
+      bgGrad.addColorStop(0, '#0a1a2a');
+      bgGrad.addColorStop(1, '#05101a');
+    } else if (activeLayer === 'elevation') {
+      bgGrad.addColorStop(0, '#2e3a23');
+      bgGrad.addColorStop(0.5, '#4a3a23');
+      bgGrad.addColorStop(1, '#1a1a1a');
+    } else {
+      bgGrad.addColorStop(0, '#2a2a2a');
+      bgGrad.addColorStop(0.5, '#1a1a1a');
+      bgGrad.addColorStop(1, '#0d0d0d');
+    }
     ctx.beginPath();
     ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
     ctx.fillStyle = bgGrad;
     ctx.fill();
 
-    // Grid rings (latitude lines)
-    for (let latDeg = -85; latDeg <= -75; latDeg += 5) {
-      const r = ((latDeg + 90) / 20) * maxR;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
+    // Specific layer base textures
+    if (activeLayer === 'optical') {
+      // Craters
+      const craterSeeds = [[0.2,0.3,0.05],[0.7,0.6,0.08],[0.5,0.8,0.06],[0.3,0.7,0.04],[0.8,0.2,0.07]];
+      craterSeeds.forEach(([x, y, rad]) => {
+        const px = cx + (x*2-1)*maxR; const py = cy + (y*2-1)*maxR; const pr = rad*maxR;
+        const grad = ctx.createRadialGradient(px-pr*0.3, py-pr*0.3, pr*0.1, px, py, pr);
+        grad.addColorStop(0, '#4a4a4a'); grad.addColorStop(0.8, '#1a1a1a'); grad.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI*2); ctx.fillStyle = grad; ctx.fill();
+      });
+    } else if (activeLayer === 'radar') {
+      // Striping
+      ctx.save();
+      ctx.translate(cx, cy);
+      for(let i=0; i<360; i+=4) {
+        ctx.rotate((4*Math.PI)/180);
+        ctx.fillStyle = i%8 === 0 ? 'rgba(79,195,247,0.1)' : 'rgba(79,195,247,0.03)';
+        ctx.fillRect(0, 0, 2, maxR);
+      }
+      ctx.restore();
+    } else if (activeLayer === 'elevation') {
+      // Contours
+      for (let r = 0; r < maxR; r += maxR/12) {
+        ctx.beginPath(); ctx.arc(cx, cy, r + Math.sin(r)*5, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1; ctx.stroke();
+      }
     }
 
-    // Grid spokes (longitude lines)
-    for (let lon = 0; lon < 360; lon += 30) {
-      const theta = (lon * Math.PI) / 180;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + maxR * Math.sin(theta), cy - maxR * Math.cos(theta));
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
+    // Grid rings (latitude lines)
+    if (activeLayer !== 'optical' && activeLayer !== 'radar') {
+      for (let latDeg = -85; latDeg <= -75; latDeg += 5) {
+        const r = ((latDeg + 90) / 20) * maxR;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      // Grid spokes
+      for (let lon = 0; lon < 360; lon += 30) {
+        const theta = (lon * Math.PI) / 180;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + maxR * Math.sin(theta), cy - maxR * Math.cos(theta));
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
     }
 
     // PSR regions
-    PSR_REGIONS.forEach((psr) => {
-      const pos = projectToCanvas(psr.lat, psr.lon, cx, cy, maxR);
-      const r = (psr.radius / 5000) * maxR * 0.7;
-      const pGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r);
-      pGrad.addColorStop(0, `rgba(17,37,67,${psr.shadowDepth * 0.85})`);
-      pGrad.addColorStop(1, 'rgba(17,37,67,0)');
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = pGrad;
-      ctx.fill();
-      // PSR border
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(79,195,247,0.15)';
-      ctx.lineWidth = 0.75;
-      ctx.stroke();
-    });
+    if (activeLayer === 'psr' || activeLayer === 'optical' || activeLayer === 'elevation') {
+      PSR_REGIONS.forEach((psr) => {
+        const pos = projectToCanvas(psr.lat, psr.lon, cx, cy, maxR);
+        const r = (psr.radius / 5000) * maxR * 0.7;
+        const pGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r);
+        pGrad.addColorStop(0, `rgba(10,15,25,${activeLayer==='psr' ? 0.95 : 0.6})`);
+        pGrad.addColorStop(1, 'rgba(10,15,25,0)');
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2); ctx.fillStyle = pGrad; ctx.fill();
+        if (activeLayer === 'psr') {
+          ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(79,195,247,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+        }
+      });
+    }
 
-    // Ice heatmap overlay (if selected)
-    if (activeLayer === 'ice' || activeLayer === 'cpr') {
+    // Ice heatmap overlay
+    if (activeLayer === 'ice') {
       LANDING_SITES.forEach((site) => {
         if (site.iceProbability < 0.5) return;
         const pos = projectToCanvas(site.lat, site.lon, cx, cy, maxR);
         const r = site.iceProbability * 30;
         const hGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r);
-        const alpha = site.iceProbability * 0.35;
-        hGrad.addColorStop(0, `rgba(79,195,247,${alpha})`);
+        hGrad.addColorStop(0, `rgba(79,195,247,${site.iceProbability * 0.5})`);
         hGrad.addColorStop(1, 'rgba(79,195,247,0)');
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = hGrad;
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2); ctx.fillStyle = hGrad; ctx.fill();
       });
     }
 
-    // Radar swath (simplified arc rectangles)
-    ctx.save();
-    ctx.translate(cx, cy);
-    for (let i = 0; i < 6; i++) {
-      ctx.rotate(Math.PI / 3);
-      ctx.fillStyle = 'rgba(79,195,247,0.04)';
-      ctx.beginPath();
-      ctx.moveTo(-8, maxR * 0.2);
-      ctx.lineTo(8, maxR * 0.2);
-      ctx.lineTo(12, maxR * 0.85);
-      ctx.lineTo(-12, maxR * 0.85);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(79,195,247,0.1)';
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
+    // CPR overlay
+    if (activeLayer === 'cpr') {
+      LANDING_SITES.forEach((site) => {
+        if (!site.cpr) return;
+        const pos = projectToCanvas(site.lat, site.lon, cx, cy, maxR);
+        const r = 25;
+        const hGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r);
+        // Blue -> Green -> Yellow -> Red based on CPR
+        const color = site.cpr > 0.8 ? '255,50,50' : site.cpr > 0.6 ? '255,200,50' : site.cpr > 0.4 ? '50,255,100' : '50,100,255';
+        hGrad.addColorStop(0, `rgba(${color}, 0.6)`);
+        hGrad.addColorStop(1, `rgba(${color}, 0)`);
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2); ctx.fillStyle = hGrad; ctx.fill();
+      });
     }
-    ctx.restore();
 
     // Rover path
-    const roverPts = [
-      { lat: -89.54, lon: 0.0 },
-      { lat: -89.32, lon: 2.1 },
-      { lat: -88.97, lon: 4.8 },
-      { lat: -88.61, lon: 6.2 },
-      { lat: -88.11, lon: 8.1 },
-    ].map((p) => projectToCanvas(p.lat, p.lon, cx, cy, maxR));
+    if (activeLayer !== 'radar') {
+      const roverPts = [
+        { lat: -89.54, lon: 0.0 }, { lat: -89.32, lon: 2.1 },
+        { lat: -88.97, lon: 4.8 }, { lat: -88.61, lon: 6.2 }, { lat: -88.11, lon: 8.1 },
+      ].map((p) => projectToCanvas(p.lat, p.lon, cx, cy, maxR));
 
-    ctx.beginPath();
-    roverPts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-    ctx.strokeStyle = '#F4C542';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 3]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+      ctx.beginPath();
+      roverPts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = '#F4C542'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.stroke();
+      ctx.setLineDash([]);
+    }
 
     // Pole indicator
-    ctx.beginPath();
-    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.fill();
-
-    ctx.font = '500 8px IBM Plex Mono, monospace';
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.textAlign = 'center';
+    ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
+    ctx.font = '500 8px IBM Plex Mono, monospace'; ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.textAlign = 'center';
     ctx.fillText('90|S', cx, cy - 8);
 
   }, [activeLayer]);

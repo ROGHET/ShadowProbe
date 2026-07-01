@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Activity, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, Menu, X } from 'lucide-react';
 import SpBadge from '../Brand/SpBadge';
 import './Navigation.css';
 
@@ -16,6 +16,7 @@ const NAV_LINKS = [
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +46,7 @@ export default function Navigation() {
         </div>
       </div>
 
-      <ul className="nav-links">
+      <ul className="nav-links desktop-only">
         {NAV_LINKS.map((link) => (
           <li key={link.label}>
             <button
@@ -64,9 +65,36 @@ export default function Navigation() {
           <span>PROTOTYPE</span>
           <div className="pulse-dot" />
         </div>
-        <div className="nav-separator" />
-        <span className="nav-mission-label">ISRO · SP</span>
+        <div className="nav-separator desktop-only" />
+        <span className="nav-mission-label desktop-only">ISRO · SP</span>
+        <button className="nav-mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="nav-mobile-menu glass"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <ul className="nav-mobile-links">
+              {NAV_LINKS.map((link) => (
+                <li key={link.label}>
+                  <button
+                    className={`nav-mobile-link ${activeSection === link.href ? 'nav-mobile-link--active' : ''}`}
+                    onClick={() => { scrollTo(link.href); setMenuOpen(false); }}
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

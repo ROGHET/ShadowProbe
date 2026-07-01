@@ -1,34 +1,21 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cpu, Zap, Database, Clock, Terminal, ChevronDown, ChevronUp, Wifi } from 'lucide-react';
 import './CommandCenter.css';
 
-// Custom hook - fixed: useEffect for side effects, not useState
-function useLiveMetric(base, variance, intervalMs = 3000) {
-  const [val, setVal] = useState(base);
-  useEffect(() => {
-    const id = setInterval(() => {
-      setVal(Math.round(base + (Math.random() - 0.5) * variance * 2));
-    }, intervalMs);
-    return () => clearInterval(id);
-  }, [base, variance, intervalMs]);
-  return val;
-}
-
 export default function CommandCenter() {
   const [collapsed, setCollapsed] = useState(false);
 
-  const cpu      = useLiveMetric(34, 8, 2800);
-  const gpu      = useLiveMetric(71, 12, 3200);
-  const inferMs  = useLiveMetric(847, 80, 4000);
+  const browserMatch = navigator.userAgent.match(/(Chrome|Firefox|Safari)\/?\s*(\d+)/i);
+  const browserInfo = browserMatch ? `${browserMatch[1]} ${browserMatch[2]}` : 'Unknown Browser';
 
   const metrics = [
-    { icon: Cpu,      label: 'CPU',           value: `${cpu}%`,       color: cpu  > 80 ? 'var(--danger)' : 'var(--success)' },
-    { icon: Zap,      label: 'GPU',           value: `${gpu}%`,       color: gpu  > 85 ? 'var(--warning)' : 'var(--accent)' },
-    { icon: Database, label: 'Dataset',       value: 'DFSAR / OHRC',  color: 'var(--text-muted)' },
-    { icon: Clock,    label: 'Inference',     value: `${inferMs} ms`, color: 'var(--accent)' },
-    { icon: Terminal, label: 'Mission Mode',  value: 'Prototype Mode', color: 'var(--warning)' },
-    { icon: Wifi,     label: 'Status',        value: 'Nominal',        color: 'var(--success)' },
+    { icon: Zap,      label: 'Rendering',     value: 'WebGL 2',               color: 'var(--accent)' },
+    { icon: Terminal, label: 'Browser',       value: browserInfo,             color: 'var(--text-muted)' },
+    { icon: Database, label: 'Dataset',       value: 'Chandrayaan-2 DFSAR + OHRC (Illustrative)', color: 'var(--text-muted)' },
+    { icon: Clock,    label: 'Inference',     value: 'Not Executed',          color: 'var(--warning)' },
+    { icon: Terminal, label: 'Mission Mode',  value: 'Research Prototype',    color: 'var(--warning)' },
+    { icon: Wifi,     label: 'Status',        value: 'Ready for Official Dataset', color: 'var(--success)' },
   ];
 
   return (
@@ -66,7 +53,7 @@ export default function CommandCenter() {
                   <m.icon size={10} style={{ color: 'var(--text-dim)', flexShrink: 0 }} />
                   <span className="data-label">{m.label}</span>
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: m.color, fontWeight: 500 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: m.color, fontWeight: 500, whiteSpace: 'nowrap' }}>
                   {m.value}
                 </span>
               </div>

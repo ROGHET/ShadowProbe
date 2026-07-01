@@ -65,11 +65,11 @@ function CompareSlider() {
         <div className="compare-label compare-label--right">Conceptual AI Visualization</div>
         <div className="ohrc-image">
           <div className="seg-overlay">
-            <div className="seg-region seg-ice" style={{ top: '20%', left: '15%', width: '25%', height: '30%' }} />
-            <div className="seg-region seg-safe" style={{ top: '55%', left: '30%', width: '40%', height: '25%' }} />
-            <div className="seg-region seg-uncertain" style={{ top: '10%', left: '55%', width: '20%', height: '20%' }} />
-            <div className="seg-region seg-hazard" style={{ top: '70%', left: '10%', width: '15%', height: '15%' }} />
-            <div className="seg-region seg-psr" style={{ top: '35%', left: '60%', width: '30%', height: '45%' }} />
+            <div className="seg-region seg-ice" style={{ top: '10%', left: '10%', width: '45%', height: '50%' }} />
+            <div className="seg-region seg-safe" style={{ top: '30%', left: '20%', width: '70%', height: '68%' }} />
+            <div className="seg-region seg-uncertain" style={{ top: '5%', left: '55%', width: '40%', height: '45%' }} />
+            <div className="seg-region seg-hazard" style={{ top: '70%', left: '5%', width: '20%', height: '30%' }} />
+            <div className="seg-region seg-psr" style={{ top: '40%', left: '60%', width: '20%', height: '25%' }} />
           </div>
         </div>
       </div>

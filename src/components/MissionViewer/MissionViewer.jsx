@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, Suspense, useCallback } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -27,99 +27,23 @@ function latLonToVec3(lat, lon, radius = 1.015) {
 // Moon sphere with textures - resilient loader
 function Moon({ vizMode }) {
   const meshRef = useRef();
-  const [colorMap, setColorMap] = useState(null);
-  const [bumpMap, setBumpMap] = useState(null);
+  const { gl } = useThree();
+  const colorMap = useLoader(THREE.TextureLoader, '/2k_moon.jpg');
 
   useEffect(() => {
-    const createMoonTexture = (size, variant) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = size;
-      canvas.height = size;
-      const context = canvas.getContext('2d');
-
-      if (!context) return null;
-
-      const baseGradient = context.createRadialGradient(
-        size * 0.38,
-        size * 0.34,
-        size * 0.08,
-        size * 0.5,
-        size * 0.5,
-        size * 0.55
-      );
-      baseGradient.addColorStop(0, variant === 'color' ? '#6f6a63' : '#c2c2c2');
-      baseGradient.addColorStop(0.45, variant === 'color' ? '#3c3a37' : '#8c8c8c');
-      baseGradient.addColorStop(1, variant === 'color' ? '#17191d' : '#202020');
-      context.fillStyle = baseGradient;
-      context.fillRect(0, 0, size, size);
-
-      const craterSeeds = [
-        [0.18, 0.24, 0.05],
-        [0.34, 0.56, 0.08],
-        [0.52, 0.36, 0.06],
-        [0.68, 0.62, 0.04],
-        [0.78, 0.28, 0.03],
-        [0.46, 0.74, 0.07],
-      ];
-
-      craterSeeds.forEach(([x, y, radius], index) => {
-        const cx = x * size;
-        const cy = y * size;
-        const pxRadius = radius * size;
-        const crater = context.createRadialGradient(cx - pxRadius * 0.35, cy - pxRadius * 0.35, pxRadius * 0.08, cx, cy, pxRadius);
-        if (variant === 'color') {
-          crater.addColorStop(0, index % 2 === 0 ? '#8f887f' : '#7d776f');
-          crater.addColorStop(0.7, index % 2 === 0 ? '#4a4743' : '#3d3a37');
-          crater.addColorStop(1, '#1a1c20');
-        } else {
-          crater.addColorStop(0, '#f2f2f2');
-          crater.addColorStop(0.7, '#7a7a7a');
-          crater.addColorStop(1, '#111111');
-        }
-        context.fillStyle = crater;
-        context.beginPath();
-        context.arc(cx, cy, pxRadius, 0, Math.PI * 2);
-        context.fill();
-      });
-
-      for (let i = 0; i < 220; i += 1) {
-        const x = Math.random() * size;
-        const y = Math.random() * size;
-        const opacity = variant === 'color' ? 0.025 : 0.05;
-        const lightness = variant === 'color'
-          ? `rgba(255, 255, 255, ${opacity})`
-          : `rgba(255, 255, 255, ${opacity + 0.02})`;
-        context.fillStyle = lightness;
-        context.fillRect(x, y, 2, 2);
-      }
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.needsUpdate = true;
-      return texture;
-    };
-
-    const colorTexture = createMoonTexture(1024, 'color');
-    const bumpTexture = createMoonTexture(1024, 'bump');
-    setColorMap(colorTexture);
-    setBumpMap(bumpTexture);
-
-    return () => {
-      colorTexture?.dispose();
-      bumpTexture?.dispose();
-    };
-  }, []);
+    if (colorMap) {
+      colorMap.colorSpace = THREE.SRGBColorSpace;
+      colorMap.anisotropy = gl.capabilities.getMaxAnisotropy();
+    }
+  }, [colorMap, gl]);
 
   return (
     <mesh ref={meshRef} castShadow receiveShadow>
       <sphereGeometry args={[1, 96, 96]} />
       <meshStandardMaterial
         map={colorMap}
-        bumpMap={bumpMap}
-        bumpScale={0.012}
-        roughness={1}
+        roughness={0.95}
         metalness={0}
-        color={colorMap ? undefined : '#888888'}
       />
     </mesh>
   );
@@ -400,6 +324,7 @@ function HUDTopLeft() {
 
 function HUDTopRight() {
   const [time, setTime] = useState(new Date());
+  const [showProgress, setShowProgress] = useState(false);
   useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(id);
@@ -413,7 +338,7 @@ function HUDTopRight() {
       </div>
       <div className="data-row">
         <span className="data-label">Dataset</span>
-        <span className="data-value">DFSAR Rev.2</span>
+        <span className="data-value">DFSAR (Illustrative)</span>
       </div>
       <div className="data-row">
         <span className="data-label">AI Status</span>
@@ -421,16 +346,41 @@ function HUDTopRight() {
       </div>
       <div className="data-row">
         <span className="data-label">Radar Coverage</span>
-        <span className="data-value">89.7%</span>
+        <span className="data-value">Pending Official Dataset</span>
       </div>
       <div className="separator" style={{ margin: '6px 0' }} />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div className="progress-bar" style={{ flex: 1 }}>
-          <div className="progress-fill" style={{ width: '62%' }} />
+      <div 
+        style={{ position: 'relative', cursor: 'pointer' }}
+        onClick={() => setShowProgress(!showProgress)}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="progress-bar" style={{ flex: 1 }}>
+            <div className="progress-fill" style={{ width: '50%' }} />
+          </div>
+          <span className="mono" style={{ fontSize: '0.625rem' }}>50%</span>
         </div>
-        <span className="mono" style={{ fontSize: '0.625rem' }}>62%</span>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', marginTop: 4 }}>
+          PROTOTYPE PROGRESS (CLICK)
+        </div>
+        
+        {showProgress && (
+          <div className="glass" style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, padding: 12, width: 240, zIndex: 10, fontSize: '0.625rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ color: 'var(--text-bright)', marginBottom: 8, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 4 }}>Completed Modules</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Frontend</span><span>100%</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Three.js Viewer</span><span>100%</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Responsive UI</span><span>100%</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Official DFSAR</span><span>0%</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Official OHRC</span><span>0%</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}><span>AI Inference</span><span>0%</span></div>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 4, display: 'flex', justifyContent: 'space-between', color: 'var(--accent)' }}>
+              <span>Overall</span><span>3 / 6 = 50%</span>
+            </div>
+            <div style={{ fontSize: '0.5rem', color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.4 }}>
+              Illustrative project progress. Not scientific confidence.
+            </div>
+          </div>
+        )}
       </div>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', marginTop: 4 }}>PROTOTYPE PROGRESS</div>
     </div>
   );
 }
@@ -442,7 +392,7 @@ function HUDBottomLeft({ coords }) {
       <div className="data-row"><span className="data-label">Latitude</span><span className="data-value">{coords.lat}|</span></div>
       <div className="data-row"><span className="data-label">Longitude</span><span className="data-value">{coords.lon}|</span></div>
       <div className="data-row"><span className="data-label">Elevation</span><span className="data-value">{coords.elev} m</span></div>
-      <div className="data-row"><span className="data-label">CPR</span><span className="data-value">0.{Math.abs(parseInt(coords.lat)) % 100} (est.)</span></div>
+      <div className="data-row"><span className="data-label">CPR</span><span className="data-value">0.{Math.abs(parseInt(coords.lat)) % 100} (Illustrative)</span></div>
     </div>
   );
 }
@@ -527,9 +477,14 @@ export default function MissionViewer() {
           <span className="section-label-text">Interactive Mission Workspace</span>
         </div>
         <h2>Lunar South Polar<br /><span style={{ color: 'var(--accent)' }}>Mission Control</span></h2>
-        <p className="mission-viewer-desc">
+        <p className="mission-viewer-desc" style={{ marginBottom: 24 }}>
           Drag to rotate | Scroll to zoom | Click markers for site details
         </p>
+        <div className="data-source-card">
+          <div className="data-source-card__label">Data Source</div>
+          <div className="data-source-card__title">Official Chandrayaan-2 DFSAR / OHRC</div>
+          <div className="data-source-card__meta">Status: Illustrative prototype visualization until the official dataset is integrated.</div>
+        </div>
       </div>
 
       {/* Globe container */}
@@ -557,14 +512,7 @@ export default function MissionViewer() {
         <HUDBottomRight />
         <VizModePanel activeMode={vizMode} onSelect={setVizMode} />
 
-        <div
-          className="data-source-card"
-          style={{ position: 'absolute', right: 24, bottom: 24, zIndex: 12, maxWidth: 300 }}
-        >
-          <div className="data-source-card__label">Data Source</div>
-          <div className="data-source-card__title">Official Chandrayaan-2 DFSAR / OHRC</div>
-          <div className="data-source-card__meta">Status: Illustrative prototype visualization until the official dataset is integrated.</div>
-        </div>
+
 
         {/* Selected site panel */}
         <AnimatePresence>
