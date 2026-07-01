@@ -147,7 +147,7 @@ export default function LunarMap() {
     ctx.font = '500 8px IBM Plex Mono, monospace';
     ctx.fillStyle = 'rgba(255,255,255,0.35)';
     ctx.textAlign = 'center';
-    ctx.fillText('90°S', cx, cy - 8);
+    ctx.fillText('90|S', cx, cy - 8);
 
   }, [activeLayer]);
 
@@ -187,7 +187,7 @@ export default function LunarMap() {
       <div className="section">
         <div className="section-label">
           <div className="section-label-line" />
-          <span className="section-label-text">Polar Projection · DFSAR Coverage</span>
+          <span className="section-label-text">Polar Projection | DFSAR Coverage</span>
         </div>
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
@@ -267,10 +267,10 @@ export default function LunarMap() {
             </div>
 
             {/* Axis labels */}
-            <div className="map-axis map-axis--top">0°N</div>
-            <div className="map-axis map-axis--right">90°E</div>
-            <div className="map-axis map-axis--bottom">180°</div>
-            <div className="map-axis map-axis--left">90°W</div>
+            <div className="map-axis map-axis--top">0|N</div>
+            <div className="map-axis map-axis--right">90|E</div>
+            <div className="map-axis map-axis--bottom">180|</div>
+            <div className="map-axis map-axis--left">90|W</div>
           </motion.div>
 
           {/* Site list */}
@@ -290,7 +290,7 @@ export default function LunarMap() {
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', color: 'white', fontWeight: 500 }}>{site.name}</div>
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', marginTop: 2 }}>
-                      {site.lat}° / {site.lon}° · Slope {site.slope}°
+                      {site.lat}| / {site.lon}| | Slope {site.slope}|
                     </div>
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export default function LunarMap() {
         >
           <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', color: 'white', fontWeight: 600 }}>{hoveredSite.name}</div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', marginTop: 2 }}>
-            {hoveredSite.lat}° · {hoveredSite.lon}°
+            {hoveredSite.lat}| | {hoveredSite.lon}|
           </div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--accent)', marginTop: 4 }}>
             Ice: {(hoveredSite.iceProbability * 100).toFixed(0)}%

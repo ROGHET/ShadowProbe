@@ -35,7 +35,7 @@ export default function LandingSiteTable() {
       <div className="section">
         <div className="section-label">
           <div className="section-label-line" />
-          <span className="section-label-text">Landing Assessment · Ranked Candidates</span>
+          <span className="section-label-text">Landing Assessment | Ranked Candidates</span>
         </div>
         <motion.h2
           ref={ref}
@@ -102,14 +102,14 @@ export default function LandingSiteTable() {
                       <div style={{ fontWeight: 500, color: 'white', fontSize: '0.875rem' }}>{site.name}</div>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', marginTop: 1 }}>{site.id}</div>
                     </td>
-                    <td><span className="mono">{site.lat}°</span></td>
-                    <td><span className="mono">{site.lon}°</span></td>
+                    <td><span className="mono">{site.lat}|</span></td>
+                    <td><span className="mono">{site.lon}|</span></td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <div style={{ width: 36, height: 2, background: 'var(--border)', borderRadius: 1, overflow: 'hidden' }}>
                           <div style={{ width: `${(site.slope / 15) * 100}%`, height: '100%', background: site.slope > 8 ? 'var(--danger)' : site.slope > 5 ? 'var(--warning)' : 'var(--success)', borderRadius: 1 }} />
                         </div>
-                        <span className="mono">{site.slope}°</span>
+                        <span className="mono">{site.slope}|</span>
                       </div>
                     </td>
                     <td><span className="mono">{site.cpr}</span></td>

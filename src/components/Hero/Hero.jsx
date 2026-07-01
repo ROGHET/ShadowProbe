@@ -152,7 +152,7 @@ export default function Hero() {
 
           <motion.div variants={item} className="hero-label-row">
             <div className="section-label-line" />
-            <span className="section-label-text">ISRO · Bharatiya Antariksh Hackathon 2026</span>
+            <span className="section-label-text">ISRO | Bharatiya Antariksh Hackathon 2026</span>
           </motion.div>
 
           <motion.h1 variants={item} className="hero-headline">

@@ -40,13 +40,13 @@ export default function MissionRibbon() {
         <div className="ribbon-item">
           <Database size={10} className="ribbon-icon" />
           <span className="ribbon-label">DATASET</span>
-          <span className="ribbon-value">DFSAR Rev.2 · OHRC-4K</span>
+          <span className="ribbon-value">DFSAR Rev.2 | OHRC-4K</span>
         </div>
         <div className="ribbon-sep" />
         <div className="ribbon-item">
           <MapPin size={10} className="ribbon-icon" />
           <span className="ribbon-label">TARGET</span>
-          <span className="ribbon-value">Lunar South Pole · 89.9°S</span>
+          <span className="ribbon-value">Lunar South Pole | 89.9Â°S</span>
         </div>
         <div className="ribbon-sep" />
         <div className="ribbon-item">

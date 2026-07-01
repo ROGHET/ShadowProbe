@@ -57,7 +57,7 @@ function CompareSlider() {
       onTouchEnd={() => { dragging.current = false; }}
     >
       <div className="compare-panel compare-panel--left" style={{ clipPath: `inset(0 ${100 - splitPct}% 0 0)` }}>
-        <div className="compare-label compare-label--left">OHRC · Optical</div>
+        <div className="compare-label compare-label--left">OHRC | Optical</div>
         <div className="ohrc-image" />
       </div>
 
@@ -155,7 +155,7 @@ export default function IceDetection() {
             <div className="ice-compare-toolbar glass">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Eye size={14} style={{ color: 'var(--accent)' }} />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--text-muted)' }}>Shackleton Rim · Tile 047</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--text-muted)' }}>Shackleton Rim | Tile 047</span>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Concept Prototype</span>

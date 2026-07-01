@@ -140,7 +140,7 @@ export default function Analytics() {
           animate={inView ? { opacity: 1 } : {}}
         >
           <div className="section-label-line" />
-          <span className="section-label-text">Mission Summary · Chandrayaan-2 Based</span>
+          <span className="section-label-text">Mission Summary | Chandrayaan-2 Based</span>
         </motion.div>
 
         <motion.h2

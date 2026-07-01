@@ -27,7 +27,7 @@ export const MISSION_INFO = {
   // OHRC resolution at 100 km altitude
   resolution: '0.25 m/pixel (OHRC)',
   coverage: 'Illustrative',
-  instrument: 'DFSAR (S-band / L-band) · OHRC',
+  instrument: 'DFSAR (S-band / L-band) | OHRC',
 };
 
 // â”€â”€ Landing Candidate Sites â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -39,7 +39,7 @@ export const LANDING_SITES = [
     id: 'SP-01',
     name: 'Shackleton Rim Alpha',
     crater: 'Shackleton',
-    // IAU: 89.54°S, 0.0° - diameter ~21 km
+    // IAU: 89.54|S, 0.0| - diameter ~21 km
     lat: -89.54,
     lon: 0.0,
     // Mazarico et al. (2011) report ~82-89% solar illumination on Shackleton rim
@@ -69,7 +69,7 @@ export const LANDING_SITES = [
     id: 'SP-02',
     name: 'Haworth Basin North',
     crater: 'Haworth',
-    // IAU: 87.5°S, 5.08°W - diameter ~51 km
+    // IAU: 87.5|S, 5.08|W - diameter ~51 km
     lat: -87.50,
     lon: -5.08,
     illumination: 62.1,
@@ -93,7 +93,7 @@ export const LANDING_SITES = [
     id: 'SP-03',
     name: 'de Gerlache Alpha',
     crater: 'de Gerlache',
-    // IAU: 88.46°S, 87.64°W - diameter ~32 km
+    // IAU: 88.46|S, 87.64|W - diameter ~32 km
     lat: -88.46,
     lon: -87.64,
     illumination: 52.3,
@@ -117,7 +117,7 @@ export const LANDING_SITES = [
     id: 'SP-04',
     name: 'Nobile Crater West',
     crater: 'Nobile',
-    // IAU: 85.20°S, 53.45°E - diameter ~41 km
+    // IAU: 85.20|S, 53.45|E - diameter ~41 km
     lat: -85.20,
     lon: 53.45,
     illumination: 44.7,
@@ -141,7 +141,7 @@ export const LANDING_SITES = [
     id: 'SP-05',
     name: 'Faustini Rim Saddle',
     crater: 'Faustini',
-    // IAU: 87.20°S, 76.97°E - diameter ~43 km
+    // IAU: 87.20|S, 76.97|E - diameter ~43 km
     lat: -87.20,
     lon: 76.97,
     illumination: 58.4,
@@ -165,7 +165,7 @@ export const LANDING_SITES = [
     id: 'SP-06',
     name: 'Shoemaker East',
     crater: 'Shoemaker',
-    // IAU: 88.12°S, 44.90°E - diameter ~51 km
+    // IAU: 88.12|S, 44.90|E - diameter ~51 km
     lat: -88.12,
     lon: 44.90,
     illumination: 38.6,
@@ -189,7 +189,7 @@ export const LANDING_SITES = [
     id: 'SP-07',
     name: 'Amundsen South Ridge',
     crater: 'Amundsen',
-    // IAU: ~84.5°S, 86.5°E - diameter ~101 km
+    // IAU: ~84.5|S, 86.5|E - diameter ~101 km
     lat: -84.52,
     lon: 86.50,
     illumination: 61.2,
@@ -213,7 +213,7 @@ export const LANDING_SITES = [
     id: 'SP-08',
     name: 'Cabeus Interior',
     crater: 'Cabeus',
-    // IAU: 84.90°S, 35.50°W - diameter ~98 km
+    // IAU: 84.90|S, 35.50|W - diameter ~98 km
     // Note: LCROSS impacted Cabeus crater on 9 Oct 2009 and confirmed water ice in ejecta plume
     lat: -84.90,
     lon: -35.50,
@@ -242,7 +242,7 @@ export const LANDING_SITES = [
 // require detailed shadow modelling from LOLA DEM.
 export const PSR_REGIONS = [
   { id: 'PSR-01', name: 'Shackleton PSR', lat: -89.54, lon: 0.0,   radius: 10.5, shadowDepth: 0.97, note: 'Confirmed PSR; rim partially illuminated' },
-  { id: 'PSR-02', name: 'Haworth PSR',    lat: -87.50, lon: -5.08, radius: 25.5, shadowDepth: 0.88, note: 'Major PSR at 87.5°S' },
+  { id: 'PSR-02', name: 'Haworth PSR',    lat: -87.50, lon: -5.08, radius: 25.5, shadowDepth: 0.88, note: 'Major PSR at 87.5|S' },
   { id: 'PSR-03', name: 'de Gerlache PSR',lat: -88.46, lon: -87.64,radius: 16.0, shadowDepth: 0.91, note: 'PSR - strong radar returns reported' },
   { id: 'PSR-04', name: 'Nobile PSR',     lat: -85.20, lon: 53.45, radius: 20.5, shadowDepth: 0.95, note: 'Extensive PSR; high scientific value' },
   { id: 'PSR-05', name: 'Faustini PSR',   lat: -87.20, lon: 76.97, radius: 21.5, shadowDepth: 0.89, note: 'Confirmed PSR; adjacent to accessible rim' },
@@ -481,7 +481,7 @@ export const FEATURE_CARDS = [
     id: 'terrain',
     icon: 'Mountain',
     title: 'Terrain Modeling',
-    subtitle: 'DEM · Slope · Illumination',
+    subtitle: 'DEM | Slope | Illumination',
     tags: ['TMC-2 DEM', 'Slope Map', 'Shadow Model'],
     desc: 'Digital elevation modeling with slope analysis and multi-epoch solar illumination simulation for landing site safety assessment.',
   },
@@ -489,7 +489,7 @@ export const FEATURE_CARDS = [
     id: 'ai',
     icon: 'Brain',
     title: 'AI Ice Detection',
-    subtitle: 'CNN · ViT · Ensemble',
+    subtitle: 'CNN | ViT | Ensemble',
     tags: ['ResNet-50', 'ViT-B/16', 'Pixel Classification'],
     desc: 'Proposed multi-modal deep learning ensemble combining convolutional and transformer architectures for pixel-level ice probability mapping. [Research Prototype]',
   },
@@ -497,7 +497,7 @@ export const FEATURE_CARDS = [
     id: 'landing',
     icon: 'Target',
     title: 'Landing Optimizer',
-    subtitle: 'Risk · Science · Access',
+    subtitle: 'Risk | Science | Access',
     tags: ['Risk Score', 'Sci. Value', 'Illumination'],
     desc: 'Multi-objective optimization balancing landing safety, scientific return, solar illumination availability, and communication window accessibility.',
   },
@@ -505,7 +505,7 @@ export const FEATURE_CARDS = [
     id: 'rover',
     icon: 'Truck',
     title: 'Rover Path Planning',
-    subtitle: 'A* · Hazard Avoidance',
+    subtitle: 'A* | Hazard Avoidance',
     tags: ['A* Search', 'Energy Model', 'Slope Limit'],
     desc: 'Energy-efficient A* pathfinding with slope and boulder hazard constraints for autonomous rover traverse planning between landing site and PSR targets.',
   },

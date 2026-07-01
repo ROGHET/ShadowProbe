@@ -34,7 +34,7 @@ export default function Footer() {
               <SpBadge size={48} />
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>MISSION</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--accent)', letterSpacing: '0.06em' }}>SP-01 · ISRO</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--accent)', letterSpacing: '0.06em' }}>SP-01 | ISRO</div>
               </div>
             </div>
           </div>
@@ -57,12 +57,12 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.04em' }}>
-            Â© {year} ISRO · Bharatiya Antariksh Hackathon 2026 · Team ShadowProbe
+            Â© {year} ISRO | Bharatiya Antariksh Hackathon 2026 | Team ShadowProbe
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Mission SP-01</span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>Spacecraft: Chandrayaan-4</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>89.9°S · Lunar South Pole</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)' }}>89.9Â°S | Lunar South Pole</span>
           </div>
         </div>
       </div>

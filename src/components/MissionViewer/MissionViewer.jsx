@@ -187,10 +187,10 @@ function SiteMarker({ site, onClick, isSelected }) {
             </div>
             <div className="globe-site-name">{site.name}</div>
             <div className="globe-site-data">
-              <div className="data-row"><span className="data-label">Lat/Lon</span><span className="data-value">{site.lat}° / {site.lon}°</span></div>
+              <div className="data-row"><span className="data-label">Lat/Lon</span><span className="data-value">{site.lat}| / {site.lon}|</span></div>
               <div className="data-row"><span className="data-label">Ice Prob.</span><span className="data-value" style={{ color: '#4FC3F7' }}>{(site.iceProbability * 100).toFixed(0)}%</span></div>
               <div className="data-row"><span className="data-label">CPR</span><span className="data-value">{site.cpr}</span></div>
-              <div className="data-row"><span className="data-label">Slope</span><span className="data-value">{site.slope}°</span></div>
+              <div className="data-row"><span className="data-label">Slope</span><span className="data-value">{site.slope}|</span></div>
               <div className="data-row"><span className="data-label">Risk</span><span className="data-value">{(site.riskScore * 100).toFixed(0)}%</span></div>
             </div>
           </div>
@@ -386,7 +386,7 @@ function HUDTopLeft() {
       <div className="hud-logo-row">
         <SpBadge size={22} />
         <div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>ISRO · Mission</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>ISRO | Mission</div>
           <div style={{ fontFamily: 'var(--font-brand)', fontSize: '0.9375rem', color: 'white', letterSpacing: '0.04em' }}>ShadowProbe</div>
         </div>
       </div>
@@ -439,8 +439,8 @@ function HUDBottomLeft({ coords }) {
   return (
     <div className="hud hud--bl glass">
       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5625rem', color: 'var(--text-dim)', letterSpacing: '0.12em', marginBottom: 6 }}>CURSOR POSITION</div>
-      <div className="data-row"><span className="data-label">Latitude</span><span className="data-value">{coords.lat}°</span></div>
-      <div className="data-row"><span className="data-label">Longitude</span><span className="data-value">{coords.lon}°</span></div>
+      <div className="data-row"><span className="data-label">Latitude</span><span className="data-value">{coords.lat}|</span></div>
+      <div className="data-row"><span className="data-label">Longitude</span><span className="data-value">{coords.lon}|</span></div>
       <div className="data-row"><span className="data-label">Elevation</span><span className="data-value">{coords.elev} m</span></div>
       <div className="data-row"><span className="data-label">CPR</span><span className="data-value">0.{Math.abs(parseInt(coords.lat)) % 100} (est.)</span></div>
     </div>
@@ -528,7 +528,7 @@ export default function MissionViewer() {
         </div>
         <h2>Lunar South Polar<br /><span style={{ color: 'var(--accent)' }}>Mission Control</span></h2>
         <p className="mission-viewer-desc">
-          Drag to rotate · Scroll to zoom · Click markers for site details
+          Drag to rotate | Scroll to zoom | Click markers for site details
         </p>
       </div>
 
@@ -587,10 +587,10 @@ export default function MissionViewer() {
               <div className="separator" style={{ margin: '12px 0' }} />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px' }}>
                 {[
-                  ['Latitude', `${selectedSite.lat}°`],
-                  ['Longitude', `${selectedSite.lon}°`],
+                  ['Latitude', `${selectedSite.lat}|`],
+                  ['Longitude', `${selectedSite.lon}|`],
                   ['Ice Prob.', `${(selectedSite.iceProbability * 100).toFixed(0)}%`],
-                  ['Slope', `${selectedSite.slope}°`],
+                  ['Slope', `${selectedSite.slope}|`],
                   ['CPR', selectedSite.cpr],
                   ['Risk', `${(selectedSite.riskScore * 100).toFixed(0)}%`],
                 ].map(([k, v]) => (

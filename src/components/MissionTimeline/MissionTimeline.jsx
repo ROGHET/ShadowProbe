@@ -73,7 +73,7 @@ export default function MissionTimeline() {
           animate={inView ? { opacity: 1 } : {}}
         >
           <div className="section-label-line" />
-          <span className="section-label-text">Mission Schedule · SP-01</span>
+          <span className="section-label-text">Mission Schedule | SP-01</span>
         </motion.div>
 
         <motion.h2
