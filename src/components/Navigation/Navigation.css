@@ -1,0 +1,132 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  transition: background var(--duration-normal), border-color var(--duration-normal), box-shadow var(--duration-normal);
+  border-bottom: 1px solid transparent;
+}
+
+.nav--scrolled {
+  background: rgba(5, 7, 11, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: var(--border);
+  box-shadow: 0 1px 24px rgba(0,0,0,0.4);
+}
+
+/* Brand */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-isro-logo {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  transition: opacity var(--duration-fast);
+}
+
+.nav-isro-logo:hover { opacity: 1; }
+
+.nav-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.nav-wordmark {
+  font-family: var(--font-brand), var(--font-heading);
+  font-size: 1.125rem;
+  color: white;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.nav-mission-id {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 450;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast), background var(--duration-fast);
+  letter-spacing: 0.01em;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.04);
+}
+
+.nav-link--active {
+  color: var(--accent);
+}
+
+/* Status */
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--success-dim);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--success);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nav-separator {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+}
+
+.nav-mission-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-mission-label { display: none; }
+}

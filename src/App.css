@@ -1,0 +1,7 @@
+.App {
+  background: var(--bg-primary);
+}
+
+main {
+  padding-top: 0;
+}

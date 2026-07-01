@@ -1,0 +1,121 @@
+.analytics-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+}
+
+.metric-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.metric-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.metric-unit {
+  font-size: 0.6875rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  font-weight: 400;
+}
+
+.metric-label {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-weight: 450;
+}
+
+.metric-module {
+  margin-top: 2px;
+}
+
+/* Feature cards */
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+}
+
+.feature-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.feature-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: rgba(79, 195, 247, 0.08);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  transition: background var(--duration-normal), border-color var(--duration-normal);
+}
+
+.feature-card:hover .feature-icon-wrap {
+  background: rgba(79, 195, 247, 0.15);
+  border-color: rgba(79, 195, 247, 0.4);
+}
+
+.feature-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.feature-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: white;
+}
+
+.feature-card-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feature-card-extra-tags {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}

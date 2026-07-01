@@ -1,0 +1,112 @@
+.rover-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+}
+
+.rover-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 32px;
+  align-items: start;
+}
+
+.rover-canvas-wrap {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.rover-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rover-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.rover-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.rover-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid;
+}
+
+.rover-dot--green { background: rgba(46,204,113,0.2); border-color: #2ECC71; }
+.rover-dot--blue  { background: rgba(79,195,247,0.2); border-color: #4FC3F7; }
+.rover-dot--red   { background: rgba(239,83,80,0.2); border-color: #EF5350; }
+
+.rover-dash {
+  width: 16px;
+  height: 2px;
+  background: #F4C542;
+  border-radius: 1px;
+}
+
+/* Waypoints list */
+.rover-waypoints-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rover-wp-item {
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+
+.rover-wp-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid;
+  margin-top: 2px;
+}
+
+.rover-wp-icon--lander  { background: rgba(46,204,113,0.1); border-color: rgba(46,204,113,0.4); color: #2ECC71; }
+.rover-wp-icon--waypoint { background: rgba(79,195,247,0.1); border-color: rgba(79,195,247,0.3); color: #4FC3F7; }
+.rover-wp-icon--target  { background: rgba(239,83,80,0.1); border-color: rgba(239,83,80,0.4); color: #EF5350; }
+
+.rover-wp-connector {
+  position: absolute;
+  left: 14px;
+  top: 32px;
+  bottom: -8px;
+  width: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.rover-wp-content {
+  padding-bottom: 20px;
+  flex: 1;
+}
+
+@media (max-width: 1000px) {
+  .rover-layout { grid-template-columns: 1fr; }
+  .rover-waypoints-list { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .rover-wp-connector { display: none; }
+}

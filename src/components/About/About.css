@@ -1,0 +1,161 @@
+.about-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+}
+
+.about-intro {
+  max-width: 1100px;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.about-card,
+.about-panel {
+  padding: 22px;
+}
+
+.about-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.about-card-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid rgba(79, 195, 247, 0.18);
+  background: rgba(79, 195, 247, 0.06);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.about-card-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.about-card p,
+.about-panel p {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.about-lower-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.about-panel-heading {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.about-steps {
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.about-steps li {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.about-dataset-list {
+  display: grid;
+  gap: 10px;
+}
+
+.about-dataset-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.about-dataset-row:last-child {
+  border-bottom: none;
+}
+
+.about-dataset-name {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.about-dataset-source,
+.about-reference-citation,
+.about-disclaimer {
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.about-references {
+  display: grid;
+  gap: 14px;
+}
+
+.about-reference-item a {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.about-disclaimer + .about-disclaimer {
+  margin-top: 10px;
+}
+
+.about-data-source {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.about-data-source__label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.about-data-source__value {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 1100px) {
+  .about-grid,
+  .about-lower-grid {
+    grid-template-columns: 1fr;
+  }
+}
