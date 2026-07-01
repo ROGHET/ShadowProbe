@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, Suspense, useCallback } from 'react';
+import { useRef, useState, useEffect, Suspense, useCallback, useLayoutEffect } from 'react';
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
@@ -64,8 +64,99 @@ function Atmosphere() {
   );
 }
 
+function SitePanelContent({ site, onDismiss }) {
+  return (
+    <>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <div className="data-label" style={{ marginBottom: 4 }}>{site.id}</div>
+          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 600, color: 'white' }}>{site.name}</div>
+        </div>
+        <span className={`badge badge-${site.status === 'OPTIMAL' ? 'success' : site.status === 'EXCLUDED' ? 'danger' : site.status === 'REVIEW' ? 'warning' : 'accent'}`}>
+          {site.status}
+        </span>
+      </div>
+      <div className="separator" style={{ margin: '12px 0' }} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px' }}>
+        {[
+          ['Latitude', `${site.lat}|`],
+          ['Longitude', `${site.lon}|`],
+          ['Ice Prob.', `${(site.iceProbability * 100).toFixed(0)}%`],
+          ['Slope', `${site.slope}|`],
+          ['CPR', site.cpr],
+          ['Risk', `${(site.riskScore * 100).toFixed(0)}%`],
+        ].map(([k, v]) => (
+          <div key={k} className="data-row">
+            <span className="data-label">{k}</span>
+            <span className="data-value">{v}</span>
+          </div>
+        ))}
+      </div>
+      <p style={{ marginTop: 10, fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>{site.notes}</p>
+      <button className="btn btn-ghost" style={{ padding: '6px 0', fontSize: '0.75rem', marginTop: 6 }} onClick={onDismiss}>
+        Dismiss
+      </button>
+    </>
+  );
+}
+
+function SmartPopup({ site, onDismiss }) {
+  const [pos, setPos] = useState(null);
+  const ref = useRef();
+
+  useLayoutEffect(() => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const markerX = rect.left;
+    const markerY = rect.top;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    
+    const width = 380;
+    const height = 240;
+    
+    let x = 24; 
+    let y = -height / 2;
+
+    if (markerX + x + width > vw - 20) {
+      x = -width - 24; 
+      if (markerX + x < 20) { 
+        x = -width / 2; 
+        y = -height - 24; 
+        if (markerY + y < 80) { 
+          y = 24; 
+        }
+      }
+    }
+    
+    if (x === 24 || x === -width - 24) {
+      if (markerY + y < 80) y = -markerY + 80; 
+      else if (markerY + y + height > vh - 20) y = vh - 20 - markerY - height; 
+    }
+
+    setPos({ x, y });
+  }, []);
+
+  return (
+    <div ref={ref} style={{ position: 'absolute', left: 0, top: 0 }}>
+      {pos && (
+        <motion.div
+          className="selected-site-panel glass"
+          initial={{ opacity: 0, scale: 0.95, x: pos.x, y: pos.y }}
+          animate={{ opacity: 1, scale: 1, x: pos.x, y: pos.y }}
+          exit={{ opacity: 0, scale: 0.95, x: pos.x, y: pos.y }}
+          transition={{ duration: 0.2 }}
+          style={{ position: 'absolute', left: 0, top: 0, margin: 0, bottom: 'auto', pointerEvents: 'all' }}
+        >
+          <SitePanelContent site={site} onDismiss={onDismiss} />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 // Landing site markers
-function SiteMarker({ site, onClick, isSelected }) {
+function SiteMarker({ site, onClick, isSelected, isMobile }) {
   const position = latLonToVec3(site.lat, site.lon);
   const meshRef = useRef();
 
@@ -99,25 +190,14 @@ function SiteMarker({ site, onClick, isSelected }) {
         <meshBasicMaterial color={color} transparent opacity={0.4} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Info card */}
-      {isSelected && (
-        <Html distanceFactor={2.5} style={{ pointerEvents: 'none' }}>
-          <div className="globe-site-card">
-            <div className="globe-site-card-header">
-              <span className="globe-site-id">{site.id}</span>
-              <span className={`badge badge-${
-                site.status === 'OPTIMAL' ? 'success' : site.status === 'EXCLUDED' ? 'danger' : site.status === 'REVIEW' ? 'warning' : 'accent'
-              }`}>{site.status}</span>
-            </div>
-            <div className="globe-site-name">{site.name}</div>
-            <div className="globe-site-data">
-              <div className="data-row"><span className="data-label">Lat/Lon</span><span className="data-value">{site.lat}| / {site.lon}|</span></div>
-              <div className="data-row"><span className="data-label">Ice Prob.</span><span className="data-value" style={{ color: '#4FC3F7' }}>{(site.iceProbability * 100).toFixed(0)}%</span></div>
-              <div className="data-row"><span className="data-label">CPR</span><span className="data-value">{site.cpr}</span></div>
-              <div className="data-row"><span className="data-label">Slope</span><span className="data-value">{site.slope}|</span></div>
-              <div className="data-row"><span className="data-label">Risk</span><span className="data-value">{(site.riskScore * 100).toFixed(0)}%</span></div>
-            </div>
-          </div>
+      {/* Info card (Desktop only) */}
+      {!isMobile && (
+        <Html style={{ pointerEvents: 'none' }} zIndexRange={[100, 0]}>
+          <AnimatePresence>
+            {isSelected && (
+              <SmartPopup site={site} onDismiss={() => onClick(site)} />
+            )}
+          </AnimatePresence>
         </Html>
       )}
     </group>
@@ -239,7 +319,7 @@ function CoordinateReadout({ onCoords }) {
 // ──────────────────────────────────────────────
 // Main Three.js Scene
 // ──────────────────────────────────────────────
-function Scene({ vizMode, selectedSite, setSelectedSite, autoRotate, setAutoRotate, onCoords }) {
+function Scene({ vizMode, selectedSite, setSelectedSite, autoRotate, setAutoRotate, onCoords, isMobile }) {
   const handleInteraction = useCallback((resumeAuto = false) => {
     if (resumeAuto) setAutoRotate(true);
     else setAutoRotate(false);
@@ -279,6 +359,7 @@ function Scene({ vizMode, selectedSite, setSelectedSite, autoRotate, setAutoRota
             site={site}
             isSelected={selectedSite?.id === site.id}
             onClick={(s) => setSelectedSite(prev => prev?.id === s.id ? null : s)}
+            isMobile={isMobile}
           />
         ))}
 
@@ -465,6 +546,14 @@ export default function MissionViewer() {
   const [selectedSite, setSelectedSite] = useState(null);
   const [autoRotate, setAutoRotate] = useState(true);
   const [coords, setCoords] = useState({ lat: '-89.54', lon: '0.00', elev: '-1842' });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleCoords = useCallback((c) => setCoords(c), []);
 
@@ -502,6 +591,7 @@ export default function MissionViewer() {
             autoRotate={autoRotate}
             setAutoRotate={setAutoRotate}
             onCoords={handleCoords}
+            isMobile={isMobile}
           />
         </Canvas>
 
@@ -514,44 +604,17 @@ export default function MissionViewer() {
 
 
 
-        {/* Selected site panel */}
+        {/* Selected site panel (Mobile only) */}
         <AnimatePresence>
-          {selectedSite && (
+          {isMobile && selectedSite && (
             <motion.div
               className="selected-site-panel glass"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
+              style={{ pointerEvents: 'all' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div className="data-label" style={{ marginBottom: 4 }}>{selectedSite.id}</div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 600, color: 'white' }}>{selectedSite.name}</div>
-                </div>
-                <span className={`badge badge-${selectedSite.status === 'OPTIMAL' ? 'success' : selectedSite.status === 'EXCLUDED' ? 'danger' : selectedSite.status === 'REVIEW' ? 'warning' : 'accent'}`}>
-                  {selectedSite.status}
-                </span>
-              </div>
-              <div className="separator" style={{ margin: '12px 0' }} />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px' }}>
-                {[
-                  ['Latitude', `${selectedSite.lat}|`],
-                  ['Longitude', `${selectedSite.lon}|`],
-                  ['Ice Prob.', `${(selectedSite.iceProbability * 100).toFixed(0)}%`],
-                  ['Slope', `${selectedSite.slope}|`],
-                  ['CPR', selectedSite.cpr],
-                  ['Risk', `${(selectedSite.riskScore * 100).toFixed(0)}%`],
-                ].map(([k, v]) => (
-                  <div key={k} className="data-row">
-                    <span className="data-label">{k}</span>
-                    <span className="data-value">{v}</span>
-                  </div>
-                ))}
-              </div>
-              <p style={{ marginTop: 10, fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>{selectedSite.notes}</p>
-              <button className="btn btn-ghost" style={{ padding: '6px 0', fontSize: '0.75rem', marginTop: 6 }} onClick={() => setSelectedSite(null)}>
-                Dismiss
-              </button>
+              <SitePanelContent site={selectedSite} onDismiss={() => setSelectedSite(null)} />
             </motion.div>
           )}
         </AnimatePresence>
